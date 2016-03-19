@@ -37,7 +37,6 @@ module TicTacToe
 	end
 
 #Creates new game board and keeps track of its states.
-#Creates new game board and keeps track of its states.
 class Board
 	attr_accessor :square_state
 	def initialize
@@ -65,10 +64,6 @@ class Board
 	def write_board(position, xo)
 		@square_state[position] = xo
 		display_board
-	end
-
-	def putssup
-		puts "supp"
 	end
 
 	def spot_empty?(position)
@@ -121,19 +116,33 @@ end
 		end
 
 		def make_move(board, xo)
-			computer_move if @computer == true
-			puts "Select a number to place an #{xo} in."
-			entry = gets.chomp.to_i
-			if entry.to_s =~ (/[1-9]/) && entry.to_s.length == 1 && board.spot_empty?(entry)
-				entry
+			if @computer == true
+				computer_move(board, xo)
 			else
-				puts "Invalid entry.  Please enter a number between 1 - 9. On an Empty Square."
-				make_move(board, xo)
+				puts "Select a number to place an #{xo} in."
+				entry = gets.chomp.to_i
+				if entry.to_s =~ (/[1-9]/) && entry.to_s.length == 1 && board.spot_empty?(entry)
+					entry
+				else
+					puts "Invalid entry.  Please enter a number between 1 - 9. On an Empty Square."
+					make_move(board, xo)
+				end
 			end
 		end
 
-		def computer_move
-			puts "noting yet"
+		def computer_move(board, xo)
+			puts_thinking
+			loop do
+				choice = rand(1..9)
+				if board.spot_empty?(choice)
+					return choice
+				end
+			end
+		end
+
+		def puts_thinking
+			puts "Thinking..."
+			sleep(1.5)
 		end
 	end
 
@@ -148,10 +157,14 @@ end
 #Assigns players as X or O, and runs game logic while game is active.
 	class Game
 		def initialize
-			player1 = Player1.new(false)
-			player2 = Player2.new(false)
-			@player_x = player1.x_or_o == "X" ? player1 : player2
-			@player_o = @player_x == player1 ? player2 : player1
+			@player1 = Player1.new(false)
+			@player2 = Player2.new(false)
+			set_players
+		end
+
+		def set_players
+			@player_x = @player1.x_or_o == "X" ? @player1 : @player2
+			@player_o = @player_x == @player1 ? @player2 : @player1
 			puts_player_info
 			@current_game = Board.new
 			@current_game.display_board
@@ -204,6 +217,14 @@ end
 	end
 
 	class HumanHumanGame < Game
+	end
+
+	class HumanCompEasyGame < Game
+		def initialize
+			@player1 = Player1.new(false)
+			@player2 = Player2.new(true)
+			set_players
+		end
 	end
 
 end
