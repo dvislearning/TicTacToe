@@ -8,28 +8,25 @@ module TicTacToe
 			puts "------------------------------"
 			puts "1: Human vs Human"
 			puts "2: Human vs Computer (Easy)"
-			puts "3: Human vs Computer (Hard)"
-			puts "4: Exit"
+			puts "3: Exit"
 			puts "------------------------------"
 			puts ""
 
 			answer = gets.chomp.to_s
 
-			if answer =~ (/[1234]/)
+			if answer =~ (/[123]/)
 				case answer
 				when "1"
 					HumanHumanGame.new
 				when "2"
 					HumanCompEasyGame.new
 				when "3"
-					HumanCompHardGame.new
-				when "4"
 					puts "Exiting Program.  Bye!"
 					puts ""
 					exit
 				else
 					puts "Invalid Input!"
-					puts "Please enter either 1, 2, 3, or 4"
+					puts "Please enter either 1, 2, or 3"
 					StartGame.new
 				end
 			end
