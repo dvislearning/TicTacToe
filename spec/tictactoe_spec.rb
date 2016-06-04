@@ -1,93 +1,124 @@
 require 'spec_helper'
 require 'tictactoe'
 
+describe 'Engine' do
+	before :each do
+		@player1 = TicTacToe::Player1.new(computer = false, name = "John", x_or_o = 'O')
+		@player2 = TicTacToe::Player2.new(computer = false, name = "Jane", x_or_o = 'X')
+		@board = TicTacToe::Board.new
+		@engine = TicTacToe::Engine.new(@player1,@player2,@board)
+	end
+	describe "#initialize" do
+		it "is expected to correctly assign @player_x and @player_y", :engine => true do
+			expect(@engine.player_x.x_or_o).to eq(@engine.player2.x_or_o)
+		end
+	end
+	describe "#winner?" do
+		context 'when x wins'
+			it "returns true with winning horizontal combination", :engine => true  do
+				@board.board_state = { 1 => "X", 2 => "X", 3 => "X", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(true)
+			end
+			it "returns true with winning vertical combination", :engine => true  do
+				@board.board_state = { 1 => "X", 2 => "2", 3 => "3", 4 => "X", 5 => "5", 6 => "6", 7 => "X", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(true)
+			end	
+			it "returns true with winning diagonal combination", :engine => true  do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "X", 4 => "4", 5 => "X", 6 => "6", 7 => "X", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(true)
+			end
+			it "returns false when line is occupied by different marks", :engine => true  do
+				@board.board_state = { 1 => "X", 2 => "2", 3 => "3", 4 => "O", 5 => "5", 6 => "6", 7 => "X", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(false)				
+			end					
+			it "returns false when no lines are occupied", :engine => true  do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(false)
+			end
+			it "returns false when draw occurs", :engine => true  do
+				@board.board_state = { 1 => "X", 2 => "O", 3 => "X", 4 => "X", 5 => "O", 6 => "X", 7 => "O", 8 => "X", 9 => "O"}
+				expect(@board.winner?).to eq(false)
+			end	
+		end
+		context 'when O wins' do
+			it "returns true with winning horizontal combination", :engine => true  do
+				@board.board_state = { 1 => "O", 2 => "O", 3 => "O", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(true)
+			end
+			it "returns true with winning vertical combination", :engine => true  do
+				@board.board_state = { 1 => "O", 2 => "2", 3 => "3", 4 => "O", 5 => "5", 6 => "6", 7 => "O", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(true)
+			end	
+			it "returns true with winning diagonal combination", :engine => true  do
+				@board.board_state = { 1 => "O", 2 => "2", 3 => "3", 4 => "4", 5 => "O", 6 => "6", 7 => "7", 8 => "8", 9 => "O"}
+				expect(@board.winner?).to eq(true)
+			end	
+		end	
+		context 'when neither X nor O win'	do
+			it "returns false when line is occupied by different marks", :engine => true  do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "O", 5 => "X", 6 => "O", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(false)				
+			end					
+			it "returns false when no lines are occupied", :engine => true  do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.winner?).to eq(false)
+			end
+			it "returns false when draw occurs", :engine => true  do
+				@board.board_state = { 1 => "X", 2 => "O", 3 => "X", 4 => "X", 5 => "O", 6 => "X", 7 => "O", 8 => "X", 9 => "O"}
+				expect(@board.winner?).to eq(false)
+			end
+		end		
+end
+
 describe 'Board' do
 	before :each do
 		@board = TicTacToe::Board.new
-		@square_state = @board.square_state
 	end
-
+	
 	describe '#write_board' do
-	 it 'changes square_state number to an X or 0 depending on user input' do
-		 @board.write_board(6, 'X') 
-		 expect(@square_state[6]).to eq("X")
-	 end	 	
-	end
-	describe '#spot_empty?' do
-	 it 'returns true if board space occupied by neither X nor O' do
-		expect(@board.spot_empty?(1)).to be(true)
-	 end 
- 	 it 'returns flase if board space is occupied by an 0' do
- 	 	@board.write_board(9, 'O')
-	 	expect(@board.spot_empty?(9)).to be(false)
-	 end
- 	 it 'returns flase if board space is occupied by an X' do
- 	 	@board.write_board(9, 'X')
-	 	expect(@board.spot_empty?(9)).to be(false)
-	 end 	 	
-	end
-	describe '#has_winner?' do
-	 it 'returns true if board spaces are occupied by three Xs along a row' do
-		@board.write_board(1, 'X')
-		@board.write_board(2, 'X')
-		@board.write_board(3, 'X')
-		expect(@board.has_winner?("X")).to be(true)
-	 end
- 	 it 'returns true if board spaces are occupied by three Xs along a diagonal' do
- 	 	@board.write_board(1, 'X')
- 	 	@board.write_board(5, 'X')
- 	 	@board.write_board(9, 'X')
-	 	expect(@board.has_winner?('X')).to be(true)
-   end
- 	 it 'returns true if board spaces are occupied by three Xs along a column' do
- 	 	@board.write_board(3, 'X')
- 	 	@board.write_board(6, 'X')
- 	 	@board.write_board(9, 'X')
-	 	expect(@board.has_winner?('X')).to be(true)
-   end
- 	 it 'returns false when a column is empty' do
-	 	expect(@board.has_winner?('O')).to be(false)
-   end   
- 	 it 'returns false when a row is one O away from winning' do
- 	 	@board.write_board(7, 'O')
- 	 	@board.write_board(8, 'O')
-	 	expect(@board.has_winner?('O')).to be(false)
-   end
- 	 it 'returns false when a diagonal is occupied with both Xs and Os' do
- 	 	@board.write_board(3, 'O')
- 	 	@board.write_board(5, 'X')
- 	 	@board.write_board(7, 'O')
-	 	expect(@board.has_winner?('O')).to be(false)
-   end
- end
-end
-
-describe 'Player1' do
-	before :all do
-		RSpec::Mocks.with_temporary_scope do
-			#$stdin_name = StringIO.new("filler_name_string\n")
-			 #$stdin = StringIO.new("filler_xo_string\n")
-			@player = TicTacToe::Player1.new
-			#@player.instance_variable_set(:@name, "Ronnie")
-			@player.instance_variable_set(:@x_or_o, "X\n")
+		context 'when board is empty' do
+			it 'places a mark on square space 5', :board => true do
+				@board.write_board(5, "X")
+				expect(@board.board_state).to eq({ 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "X", 6 => "6", 7 => "7", 8 => "8", 9 => "9"})
+			end
+		end
+		context 'when other marks are present' do
+			it 'places a mark square space 2', :board => true do
+				@board.board_state = { 1 => "O", 2 => "2", 3 => "O", 4 => "4", 5 => "X", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				@board.write_board(2, "X")
+				expect(@board.board_state).to eq({ 1 => "O", 2 => "X", 3 => "O", 4 => "4", 5 => "X", 6 => "6", 7 => "7", 8 => "8", 9 => "9"})
+			end
 		end
 	end
-	describe '#initialize' do
-		# it 'describes initialize' do
-		# 	expect(@player.name).to eq("Ronnie")
-		# end
-		it 'describes initialize' do
-			expect(@player.x_or_o).to eq("X")
+	
+	describe 'spot_empty?' do
+		context 'when checking Xs ' do
+			it 'returns true when checking empty square space 3', :board => true do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.spot_empty?(3)).to eq(true)
+			end
+			it 'returns false when checking square space 3 filled with X', :board => true do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "X", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.spot_empty?(3)).to eq(false)
+			end
+			it 'returns false when checking square space 6 filled with O', :board => true do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "O", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.spot_empty?(6)).to eq(false)
+			end			
+		end
+		context 'when checking Os ' do
+			it 'returns false when checking square space 3 filled with O', :board => true do
+				@board.board_state = { 1 => "O", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.spot_empty?(1)).to eq(false)
+			end
+			it 'returns false when checking square space 4 filled with X', :board => true do
+				@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "X", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+				expect(@board.spot_empty?(4)).to eq(false)
+			end			
 		end		
 	end
-	# describe '#get_name' do
-	#  it 'sets Player1 name to user input' do
-	# 	 player = TicTacToe::Player1.new
-	# 	 player.stub(:STDIN.gets) {"Ronnie"}
-	# 	 expect(player.get_name).to eq("Ronnie")
-	#  end	 	
- 	# end
 end
+
 
 #allow_any_instance_of(Kernel).to receive(:gets).and_return("1\n")
 
