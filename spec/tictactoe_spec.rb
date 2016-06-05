@@ -90,6 +90,23 @@ describe 'Board' do
 			end
 		end
 	end
+
+	describe '#draw?' do
+		it 'returns false on an empty board', :board => true do
+			@board.board_state = { 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+			expect(@board.draw?).to eq(false)
+		end
+		it 'returns true when all squares have been filled with a mark', :board => true do
+			@board.board_state = { 1 => "X", 2 => "2", 3 => "X", 4 => "X", 5 => "O", 6 => "X", 7 => "O", 8 => "X", 9 => "O"}
+			@board.write_board(2, "O")
+			expect(@board.draw?).to eq(true)
+		end
+		it 'returns true when all squares have been filled with a mark', :board => true do
+			@board.board_state = { 1 => "1", 2 => "2", 3 => "X", 4 => "4", 5 => "O", 6 => "6", 7 => "7", 8 => "8", 9 => "9"}
+			@board.write_board(1, "O")
+			expect(@board.draw?).to eq(false)
+		end		
+	end	
 	
 	describe 'spot_empty?' do
 		context 'when checking Xs ' do
@@ -119,7 +136,5 @@ describe 'Board' do
 	end
 end
 
-
-#allow_any_instance_of(Kernel).to receive(:gets).and_return("1\n")
 
 
