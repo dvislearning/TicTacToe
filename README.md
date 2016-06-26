@@ -1,6 +1,6 @@
 # TicTacToe
 
-TicTacToe is a student project from TheOdinProject(http://www.theodinproject.com/ruby-programming/oop) designed to demonstrate introductory concepts behind object oriented programming.  This mostly entails writting and organizing classes, as well as being able to call class instances throughout the program.
+TicTacToe is a student project from [TheOdinProject](http://www.theodinproject.com/ruby-programming/oop) designed to demonstrate introductory concepts behind object oriented programming.  This mostly entails writting and organizing classes, as well as being able to call class instances throughout the program.
 
 Later, this projected was revisited to explore the concepts behind RSpec and Test Driven Development.  Specs were written for critical game functions such as chceking for winners, and making sure that the board state is correctly represented after user input.
 
