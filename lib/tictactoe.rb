@@ -205,11 +205,11 @@ module TicTacToe
 		end
 
 		def display_board
-		  puts ""         
-	   	puts "|#{@board_state[1]}|#{@board_state[2]}|#{@board_state[3]}|"
-		  puts "|#{@board_state[4]}|#{@board_state[5]}|#{@board_state[6]}|"
-		  puts "|#{@board_state[7]}|#{@board_state[8]}|#{@board_state[9]}|"
-		  puts ""
+		  puts %W(\n
+		  	|#{@board_state[1]}|#{@board_state[2]}|#{@board_state[3]}|
+		  	|#{@board_state[4]}|#{@board_state[5]}|#{@board_state[6]}|
+		  	|#{@board_state[7]}|#{@board_state[8]}|#{@board_state[9]}|
+		  	\n)
 		end
 
 		def write_board(position, xo)
@@ -241,3 +241,5 @@ module TicTacToe
 		end
 	end
 end
+
+TicTacToe::Board.new.display_board
