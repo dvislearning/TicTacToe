@@ -17,6 +17,9 @@ end
 
 @players = []
 @current_player = nil
+@board = Board.new
+@player_x = nil
+@player_o = nil
 
 def get_game_mode
 	mode_selection = gets.chomp.to_s
@@ -84,9 +87,33 @@ def initialize_chosen_mode(game_choice)
 	end
 end
 
+def set_x_and_o
+	@player_x = @players.find{ |player| player.mark == "X"}
+	@player_o = @players.find{ |player| player.mark == "O"}
+end
+
+def computer_move(xo)
+	puts_thinking
+	loop do
+		choice = rand(1..9)
+		if board.spot_empty?(choice)
+			return choice
+		end
+	end
+end
+
+def puts_thinking
+	puts "Thinking..."
+	sleep(1.5)
+end	
+
+
 
 
 puts_start_message
 initialize_chosen_mode(get_game_mode)
+set_x_and_o
 
-puts @players.inspect
+puts @player_x.inspect
+puts @player_o.inspect
+
