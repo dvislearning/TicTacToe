@@ -1,3 +1,6 @@
+require_relative 'board'
+require_relative 'player'
+
 def puts_start_message
 	start_message = 
 	
@@ -12,8 +15,8 @@ def puts_start_message
 	puts start_message
 end
 
-@game_mode = nil
-@player1 = Hash.new
+@players = []
+@current_player = nil
 
 def get_game_mode
 	mode_selection = gets.chomp.to_s
@@ -21,23 +24,69 @@ def get_game_mode
 		@game_mode = mode_selection
 	else
 		puts "Selection invalid.  Please enter either 1,2,3 or 4"
-		get_game_mode
+		get_game_mosde
 	end
 end
 
-def initialize_chosen_mode
-	case @game_mode
+def get_name(computer = false)
+	if computer == false
+		puts "Please Enter Your Name: "
+		gets.chomp
+	else
+		"CPU"
+	end
+end
+
+def get_mark
+	if @players.empty?
+		puts "Would you like to play as X or O?"
+		mark_choice = gets.chomp.capitalize
+		if mark_choice =~ /^[X|O]$/ 
+			mark_choice
+		else
+			puts "Invalid entry"
+			get_mark
+		end
+	else
+		return @players[0].mark == "X" ? "O" : "X"
+	end
+end
+
+def make_human_player
+	name = get_name
+	mark = get_mark
+	Player.new(name, mark, computer = false)
+end
+
+def make_cpu_player
+	name = get_name(computer = true)
+	mark = get_mark
+	Player.new(name, mark, computer = true)
+end
+
+def start_two_human_game
+	2.times {@players << make_human_player}
+end
+
+def easy_human_comp_game
+	@players << make_human_player
+	@players << make_cpu_player
+end
+
+def initialize_chosen_mode(game_choice)
+	case game_choice
 	when "1"
-		puts "1"
+		start_two_human_game
 	when "2"
-		puts "2"
+		easy_human_comp_game
 	when "3"
-		puts "3"
+		exit
 	end
 end
 
 
 
 puts_start_message
-get_game_mode
-initialize_chosen_mode
+initialize_chosen_mode(get_game_mode)
+
+puts @players.inspect
