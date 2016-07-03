@@ -92,6 +92,18 @@ def set_x_and_o
 	@player_o = @players.find{ |player| player.mark == "O"}
 end
 
+def puts_match_up
+	match_up = 
+
+	%Q(
+		(X) #{@player_x.name}\n
+		    vs\n
+		(O) #{@player_o.name}
+		)
+
+	puts match_up
+end
+
 def computer_move(xo)
 	puts_thinking
 	loop do
@@ -109,11 +121,9 @@ end
 
 
 
-
 puts_start_message
 initialize_chosen_mode(get_game_mode)
 set_x_and_o
+puts_match_up
 
-puts @player_x.inspect
-puts @player_o.inspect
 
