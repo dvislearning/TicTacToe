@@ -90,6 +90,7 @@ end
 def set_x_and_o
 	@player_x = @players.find{ |player| player.mark == "X"}
 	@player_o = @players.find{ |player| player.mark == "O"}
+	@current_player = @player_x
 end
 
 def puts_match_up
@@ -104,26 +105,55 @@ def puts_match_up
 	puts match_up
 end
 
-def computer_move(xo)
+def declare_draw
+	puts "This contest is a DRAW!"
+	exit
+end
+
+def declare_winner
+	puts "(#{@current_player.mark}) #{@current_player.name} is the Winner!"
+	exit
+end
+
+def computer_move
 	puts_thinking
+	choice = nil
 	loop do
 		choice = rand(1..9)
-		if board.spot_empty?(choice)
-			return choice
-		end
+		break if @board.spot_empty?(choice)
 	end
+	@board.write_board(choice, @current_player.mark)
+end
+
+def human_move(mark)
+	puts "Select number to place an #{mark} on"
+	selection = gets.chomp.to_i
+	if !selection.to_s.match(/^[1-9]$/)
+		puts "Please enter a number between 1-9"
+		human_move(mark)
+	end
+	if !@board.spot_empty?(selection)
+		puts "Please select an empty square!"
+		human_move(mark)
+	end
+	@board.write_board(selection, mark)
 end
 
 def puts_thinking
-	puts "Thinking..."
+	puts "CPU is thinking..."
 	sleep(1.5)
 end	
-
 
 
 puts_start_message
 initialize_chosen_mode(get_game_mode)
 set_x_and_o
 puts_match_up
-
-
+@board.display_board
+loop do
+	@current_player.computer == true ? computer_move : human_move(@current_player.mark)
+	@board.display_board
+	declare_winner if @board.winner?
+	declare_draw if @board.draw?
+	@current_player = @players.find{ |player| player != @current_player }
+end 
