@@ -24,7 +24,6 @@
 
 		def write_board(position, xo)
 			@board_state[position] = xo
-			display_board
 		end
 
 		def spot_empty?(position)
